@@ -1,0 +1,39 @@
+[
+  { "date": "2026-06-02", "type": "regular", "home": "中信兄弟", "away": "樂天桃猿" },
+  { "date": "2026-06-02", "type": "regular", "home": "味全龍", "away": "富邦悍將" },
+
+  { "date": "2026-06-03", "type": "regular", "home": "中信兄弟", "away": "樂天桃猿" },
+  { "date": "2026-06-03", "type": "regular", "home": "味全龍", "away": "富邦悍將" },
+  { "date": "2026-06-03", "type": "regular", "home": "統一7-ELEVEn獅", "away": "台鋼雄鷹" },
+
+  { "date": "2026-06-05", "type": "regular", "home": "樂天桃猿", "away": "富邦悍將" },
+  { "date": "2026-06-05", "type": "regular", "home": "味全龍", "away": "中信兄弟" },
+  { "date": "2026-06-05", "type": "regular", "home": "統一7-ELEVEn獅", "away": "台鋼雄鷹" },
+
+  { "date": "2026-06-06", "type": "regular", "home": "樂天桃猿", "away": "富邦悍將" },
+  { "date": "2026-06-06", "type": "regular", "home": "味全龍", "away": "中信兄弟" },
+  { "date": "2026-06-06", "type": "regular", "home": "統一7-ELEVEn獅", "away": "台鋼雄鷹" },
+
+  { "date": "2026-06-07", "type": "regular", "home": "樂天桃猿", "away": "富邦悍將" },
+  { "date": "2026-06-07", "type": "regular", "home": "味全龍", "away": "中信兄弟" },
+  { "date": "2026-06-07", "type": "regular", "home": "統一7-ELEVEn獅", "away": "台鋼雄鷹" },
+
+  { "date": "2026-06-09", "type": "regular", "home": "富邦悍將", "away": "統一7-ELEVEn獅" },
+  { "date": "2026-06-09", "type": "regular", "home": "台鋼雄鷹", "away": "樂天桃猿" },
+
+  { "date": "2026-06-10", "type": "regular", "home": "富邦悍將", "away": "統一7-ELEVEn獅" },
+  { "date": "2026-06-10", "type": "regular", "home": "台鋼雄鷹", "away": "樂天桃猿" },
+  { "date": "2026-06-10", "type": "regular", "home": "中信兄弟", "away": "味全龍" },
+
+  { "date": "2026-06-12", "type": "regular", "home": "中信兄弟", "away": "富邦悍將" },
+  { "date": "2026-06-12", "type": "regular", "home": "樂天桃猿", "away": "統一7-ELEVEn獅" },
+  { "date": "2026-06-12", "type": "regular", "home": "台鋼雄鷹", "away": "味全龍" },
+
+  { "date": "2026-06-13", "type": "regular", "home": "中信兄弟", "away": "富邦悍將" },
+  { "date": "2026-06-13", "type": "regular", "home": "樂天桃猿", "away": "統一7-ELEVEn獅" },
+  { "date": "2026-06-13", "type": "regular", "home": "台鋼雄鷹", "away": "味全龍" },
+
+  { "date": "2026-06-14", "type": "regular", "home": "中信兄弟", "away": "富邦悍將" },
+  { "date": "2026-06-14", "type": "regular", "home": "樂天桃猿", "away": "統一7-ELEVEn獅" },
+  { "date": "2026-06-14", "type": "regular", "home": "台鋼雄鷹", "away": "味全龍" }
+]
