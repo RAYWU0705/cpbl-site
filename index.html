@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <base href="/cpbl-site/">
+
+  <title>CPBL 賽程與數據站</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">CPBL</a>
+    <a class="nav-link active" href="index.html">首頁</a>
+    <a class="nav-link" href="schedule.html">賽程</a>
+    <a class="nav-link" href="standings.html">戰績</a>
+    <a class="nav-link" href="teams.html">球隊</a>
+  </div>
+</nav>
+
+
+<header>
+    <h1>中華職棒賽程與數據站</h1>
+    <p>今日賽程</p>
+</header>
+<section class="home-features">
+  <div class="feature-card">
+    <h3>📅 賽程</h3>
+    <p>查看每日與整月中職賽程，支援球隊與日期篩選。</p>
+    <a href="schedule.html">前往賽程 →</a>
+  </div>
+
+  <div class="feature-card">
+    <h3>📊 戰績</h3>
+    <p>即時查看各隊勝敗、勝率與排名走勢。</p>
+    <a href="standings.html">查看戰績 →</a>
+  </div>
+
+  <div class="feature-card">
+    <h3>🏟️ 球隊</h3>
+    <p>認識中華職棒六支球隊的基本資料與特色。</p>
+    <a href="teams.html">瀏覽球隊 →</a>
+  </div>
+</section>
+
+<main>
+  <section class="quick-links">
+    <section class="home-panels" style="margin-top:16px;">
+  <div class="panel">
+    <h2>🏆 戰績 TOP 3</h2>
+    <div id="top3"></div>
+  </div>
+
+  <div class="panel">
+    <h2>📌 站內狀態</h2>
+    <p style="color:#555; line-height:1.7;">
+      目前：賽程已支援月份/球隊/日期篩選；戰績可搜尋；球隊頁製作中。<br>
+      目標：補上球場/時間、加上比分→自動算戰績。
+    </p>
+  </div>
+</section>
+
+  <a class="quick-btn" id="goMonth" href="#">📅 前往本月賽程</a>
+
+  <a class="quick-btn" href="standings.html">📊 前往戰績</a>
+  <a class="quick-btn" href="teams.html">🏟️ 前往球隊</a>
+</section>
+
+  <section class="home-panels">
+
+    <div class="panel">
+      <h2>今日賽程</h2>
+      <div id="today"></div>
+    </div>
+
+    <div class="panel">
+      <h2>本週賽程</h2>
+      <div id="week"></div>
+    </div>
+
+  </section>
+</main>
+
+<script>
+  function ymd(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function startOfWeek(d) {
+    // 以週一為一週開始
+    const copy = new Date(d);
+    const day = copy.getDay(); // 0(日)~6(六)
+    const diff = (day === 0 ? -6 : 1 - day);
+    copy.setDate(copy.getDate() + diff);
+    copy.setHours(0,0,0,0);
+    return copy;
+  }
+
+  function addDays(d, n) {
+    const copy = new Date(d);
+    copy.setDate(copy.getDate() + n);
+    return copy;
+  }
+
+  function renderGames(containerId, games, titleIfEmpty) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+
+  if (!games.length) {
+    el.innerHTML = `<p style="color:#666;">${titleIfEmpty}</p>`;
+    return;
+  }
+
+  // ① 依日期分組
+  const grouped = {};
+  games.forEach(g => {
+    if (!grouped[g.date]) grouped[g.date] = [];
+    grouped[g.date].push(g);
+  });
+
+  // ② 按日期排序顯示
+  Object.keys(grouped).sort().forEach(date => {
+    const dateTitle = document.createElement("h3");
+    dateTitle.className = "date-title";
+    dateTitle.textContent = `📅 ${date}`;
+    el.appendChild(dateTitle);
+
+    const row = document.createElement("div");
+    row.className = "game-row";
+
+    grouped[date].forEach(g => {
+      const card = document.createElement("div");
+      card.className = "mini-game-card";
+
+      const warn = g.needsConfirm ? " ⚠️(待確認)" : "";
+
+      card.innerHTML = `
+        <div class="mini-teams">${g.away} vs ${g.home}${warn}</div>
+        <div class="mini-meta">📍 球場：待補</div>
+        <div class="mini-meta">🕕 時間：待補</div>
+      `;
+      row.appendChild(card);
+    });
+
+    el.appendChild(row);
+  });
+}
+
+    
+
+  fetch("data/schedule-2026-04.json")
+    .then(r => r.json())
+    .then(allGames => {
+      const today = new Date();
+      const todayStr = ymd(today);
+
+      const weekStart = startOfWeek(today);
+      const weekEnd = addDays(weekStart, 6);
+      const weekStartStr = ymd(weekStart);
+      const weekEndStr = ymd(weekEnd);
+
+      const todayGames = allGames.filter(g => g.date === todayStr);
+
+      const weekGames = allGames
+        .filter(g => g.date >= weekStartStr && g.date <= weekEndStr)
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      renderGames("today", todayGames, "今天沒有比賽（或不在這個月份資料內）");
+      renderGames("week", weekGames, `本週（${weekStartStr} ~ ${weekEndStr}）沒有比賽（或不在這個月份資料內）`);
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("today").innerHTML = `<p style="color:red;">讀取失敗：${err.message}</p>`;
+      document.getElementById("week").innerHTML = `<p style="color:red;">讀取失敗：${err.message}</p>`;
+    });
+    // ====== 首頁：讀取戰績 Top 3 ======
+fetch("data/standings-2026.json")
+  .then(r => r.json())
+  .then(rows => {
+    // 計算勝率（和局不算勝敗）
+    const normalized = rows.map(r => {
+      const wins = Number(r.wins ?? 0);
+      const losses = Number(r.losses ?? 0);
+      const ties = Number(r.ties ?? 0);
+      const winPct = (wins + losses) === 0 ? 0 : wins / (wins + losses);
+      return { ...r, wins, losses, ties, winPct };
+    });
+
+    normalized.sort((a,b) => b.winPct - a.winPct || b.wins - a.wins);
+
+    const top3 = normalized.slice(0,3);
+    const el = document.getElementById("top3");
+    if (!el) return;
+
+    el.innerHTML = top3.map((t, i) => {
+      const medal = i===0?"🥇":i===1?"🥈":"🥉";
+      const pct = t.winPct.toFixed(3);
+      return `
+        <div class="top3-card">
+          <div class="top3-rank">${medal} 第${i+1}</div>
+          <div class="top3-team">${t.team}</div>
+          <div class="top3-meta">勝 ${t.wins}｜敗 ${t.losses}｜和 ${t.ties}｜勝率 ${pct}</div>
+        </div>
+      `;
+    }).join("");
+  })
+  .catch(err => {
+    const el = document.getElementById("top3");
+    if (el) el.innerHTML = `<p style="color:#c00;">戰績讀取失敗：${err.message}</p>`;
+  });
+// ====== 首頁：快速前往「本月賽程」 ======
+(function setGoMonth(){
+  const a = document.getElementById("goMonth");
+  if (!a) return;
+
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const month = `${y}-${m}`; // 例如 2026-01
+
+  a.href = `schedule.html?month=${month}`;
+  a.textContent = `📅 前往 ${y}/${m} 賽程`;
+})();
+
+</script>
+
+
+<footer>
+    © 2026 CPBL Data Site｜明叡X Chatgpt網站
+</footer>
+
+</body>
+</html>

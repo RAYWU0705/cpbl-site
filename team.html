@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>CPBL 球隊詳細</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">CPBL</a>
+    <a class="nav-link" href="index.html">首頁</a>
+    <a class="nav-link" href="schedule.html">賽程</a>
+    <a class="nav-link" href="standings.html">戰績</a>
+    <a class="nav-link active" href="teams.html">球隊</a>
+  </div>
+</nav>
+
+<header>
+  <h1 id="pageTitle">球隊詳細</h1>
+  <p id="pageSub" style="opacity:.9;">讀取中…</p>
+</header>
+
+<main>
+  <div id="wrap"></div>
+</main>
+
+<footer>© 2026 CPBL Data Site｜明叡 × ChatGPT</footer>
+
+<script>
+const wrap = document.getElementById("wrap");
+const pageTitle = document.getElementById("pageTitle");
+const pageSub = document.getElementById("pageSub");
+
+function colorDot(hex){
+  return `<span class="color-dot" style="background:${hex};"></span>`;
+}
+
+function getId(){
+  const p = new URLSearchParams(location.search);
+  return p.get("id");
+}
+
+function renderNotFound(){
+  wrap.innerHTML = `
+    <div class="detail-card">
+      <div class="detail-title">找不到球隊</div>
+      <div style="color:#666; line-height:1.7;">
+        可能是網址沒有帶 <b>?id=</b>，或 teams.json 裡沒有這個 id。
+      </div>
+      <div style="margin-top:12px;">
+        <a href="teams.html" class="nav-link" style="display:inline-block; background:rgba(11,60,93,.1); color:#0b3c5d;">回球隊列表</a>
+      </div>
+    </div>
+  `;
+}
+
+async function load(){
+  const id = getId();
+  if (!id){
+    pageTitle.textContent = "球隊詳細";
+    pageSub.textContent = "缺少 id";
+    renderNotFound();
+    return;
+  }
+
+  try{
+    const res = await fetch("data/teams.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const teams = await res.json();
+
+    const t = (teams || []).find(x => x.id === id);
+    if (!t){
+      pageTitle.textContent = "球隊詳細";
+      pageSub.textContent = `找不到：${id}`;
+      renderNotFound();
+      return;
+    }
+
+    pageTitle.textContent = t.name;
+    pageSub.textContent = `${t.city || ""}｜主場：${t.home || ""}`;
+
+    wrap.innerHTML = `
+      <div class="detail-card">
+        <div class="detail-title">${t.name}（${t.short || ""}）</div>
+
+        <div class="detail-row"><b>城市：</b> ${t.city || "-"}</div>
+        <div class="detail-row"><b>主場：</b> ${t.home || "-"}</div>
+        <div class="detail-row"><b>成立：</b> ${t.founded || "-"}</div>
+
+        <div class="detail-row"><b>主色：</b>
+          ${(t.colors || []).slice(0,3).map(colorDot).join("")}
+        </div>
+
+        <div class="detail-intro">${t.intro || ""}</div>
+
+        <hr style="margin:16px 0; opacity:.25;">
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a href="teams.html" class="team-btn">← 回球隊列表</a>
+          <a href="schedule.html" class="team-btn">去看賽程</a>
+          <a href="standings.html" class="team-btn">去看戰績</a>
+        </div>
+      </div>
+    `;
+  }catch(err){
+    console.error(err);
+    wrap.innerHTML = `<p style="color:red;">球隊資料讀取失敗</p>`;
+    pageSub.textContent = "讀取失敗";
+  }
+}
+
+load();
+</script>
+
+</body>
+</html>
